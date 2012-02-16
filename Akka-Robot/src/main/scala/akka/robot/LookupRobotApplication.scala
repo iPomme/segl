@@ -37,39 +37,6 @@ class LookupRobotApplication extends Bootable {
     clientContext.shutdown()
   }
 
-  def simpleCall() {
-    val remoteActor = clientContext.actorFor(remoteUrl)
-    remoteActor ! ("Say", "Voila")
-  }
-
-  def concurrentCall(){
-    val remoteActor = clientContext.actorFor(remoteUrl)
-    val anotherActor = clientContext.actorFor(remoteUrl)
-
-    val future = remoteActor ? "Sit_CatchFly"
-    (1 to 5) foreach {x => anotherActor ! ("Say",  x.toString)}
-    Thread.sleep(5000)
-    anotherActor ! ("Say","Pas facile de l'attrappé!")
-    log.info("Future returned : " + Await.result(future, timeout.duration))
-  }
-
-  def choregraphie() {
-    val remoteActor = clientContext.actorFor(remoteUrl)
-    val anotherActor = clientContext.actorFor(remoteUrl)
-    val future = remoteActor ? "StandUp"
-    anotherActor ! ("Say","Ok, On y va!")
-    log.info("Future for Stand up returned : " + Await.result(future, timeout.duration))
-    val mystic = remoteActor ?  "Stand_Mystic"
-    log.info("Future for Stand_Mystic returned : " + Await.result(mystic, timeout.duration))
-
-    anotherActor ! "OpenLeftHand"
-    anotherActor ! "CloseLeftHand"
-
-    val sit = remoteActor.?("Sit")(timeout = 1 second ) onTimeout
-    log.info("Future for Sit returned : " + Await.result(sit, timeout.duration))
-  }
-
-
 
   def `... Implement your code here` = {
     println("""Use one of the following messages:
